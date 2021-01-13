@@ -8,6 +8,7 @@
 
 ```bash
 go get github.com/bbriano/gomail
+echo 'Hello,\n' > ~/.gomail_template
 ```
 
 currently only works with google's mail server

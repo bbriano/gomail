@@ -9,6 +9,10 @@ import (
 	"os/exec"
 )
 
+const (
+	templateFile = "~/.gomail_template"
+)
+
 func main() {
 	from := os.Getenv("GOMAIL_USER")
 	password := os.Getenv("GOMAIL_PASS")
@@ -33,7 +37,7 @@ func main() {
 		tempFile := "/tmp/gomail"
 
 		// Overwrite temp file with template file
-		template, err := ioutil.ReadFile("template")
+		template, err := ioutil.ReadFile(templateFile)
 		if err != nil {
 			log.Fatal(err)
 		}
