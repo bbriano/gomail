@@ -10,17 +10,21 @@ import (
 )
 
 const (
-	templateFile = "~/.gomail_template"
+	host = "smtp.gmail.com"
+	addr = host + ":587"
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: gomail <recipent_address>")
+		os.Exit(1)
+	}
+
 	from := os.Getenv("GOMAIL_USER")
 	password := os.Getenv("GOMAIL_PASS")
 	to := os.Args[1:]
-	host := "smtp.gmail.com"
-	addr := host + ":587"
-	message := []byte{}
 
+	message := []byte{}
 	f, err := os.Stdin.Stat()
 	if err != nil {
 		log.Fatal(err)
@@ -37,9 +41,13 @@ func main() {
 		tempFile := "/tmp/gomail"
 
 		// Overwrite temp file with template file
-		template, err := ioutil.ReadFile(templateFile)
-		if err != nil {
-			log.Fatal(err)
+		template := make([]byte, 0)
+		templateFile := os.Getenv("HOME") + "/.gomail_template"
+		if _, err := os.Stat(templateFile); err == nil {
+			template, err = ioutil.ReadFile(templateFile)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 		err = ioutil.WriteFile(tempFile, template, 0644)
 		if err != nil {
@@ -59,16 +67,13 @@ func main() {
 		}
 	}
 
-	// Send to self if not specify receiver
-	if len(to) <= 0 {
-		to = []string{from}
-	}
-
 	// Authenticate and send mail
+	fmt.Print("Authenticating... ")
 	auth := smtp.PlainAuth("", from, password, host)
+	fmt.Println("Success")
+	fmt.Print("Sending mail... ")
 	if err := smtp.SendMail(addr, auth, from, to, message); err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Mail Sent!")
+	fmt.Println("Success")
 }

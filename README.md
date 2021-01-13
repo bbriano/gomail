@@ -3,15 +3,15 @@
 **Requirements**
 
 - Go
+- Gmail account
 
 **Installation**
 
+Download and install gomail
+
 ```bash
 go get github.com/bbriano/gomail
-echo 'Hello,\n' > ~/.gomail_template
 ```
-
-currently only works with google's mail server
 
 setup environment variables
 
@@ -20,18 +20,23 @@ export GOMAIL_USER='yourname@example.com'
 export GOMAIL_PASS='Password123'
 ```
 
+Setup template file (Must have this file in home path!)
+
+```bash
+echo 'From: <your_email>
+Subject: <subject>
+
+
+Kind regards,
+<yours_truly>' > ~/.gomail_template
+```
+
 **Usage**
 
 Mail someone. Will use default editor
 
 ```bash
 gomail someone@example.com
-```
-
-Mail to self
-
-```bash
-gomail
 ```
 
 Will read from STDIN if its not empty
