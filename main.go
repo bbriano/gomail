@@ -7,6 +7,9 @@ import (
 	"net/smtp"
 	"os"
 	"os/exec"
+	"strings"
+
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 const (
@@ -21,7 +24,6 @@ func main() {
 	}
 
 	from := os.Getenv("GOMAIL_USER")
-	password := os.Getenv("GOMAIL_PASS")
 	to := os.Args[1:]
 
 	message := []byte{}
@@ -68,9 +70,18 @@ func main() {
 	}
 
 	// Authenticate and send mail
-	fmt.Print("Authenticating... ")
+	fmt.Printf("Enter password: ")
+	tmp, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+	password := string(tmp)
+	if err != nil {
+		log.Fatal(err)
+	}
+	password = strings.Trim(password, " \t\n")
 	auth := smtp.PlainAuth("", from, password, host)
+	fmt.Print("Authenticating... ")
 	fmt.Println("Success")
+
+	// Send mail
 	fmt.Print("Sending mail... ")
 	if err := smtp.SendMail(addr, auth, from, to, message); err != nil {
 		log.Fatal(err)
