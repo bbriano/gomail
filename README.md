@@ -17,7 +17,6 @@ setup environment variables
 
 ```bash
 export GOMAIL_USER='yourname@example.com'
-export GOMAIL_PASS='Password123'
 ```
 
 Setup template file (Must have this file in home path!)
